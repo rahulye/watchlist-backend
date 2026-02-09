@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>post methods</title>
+</head>
+<style>
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
+
+<body>
+  <form id="contact-form">
+    <input placeholder="enter your data" />
+    <textarea></textarea>
+    <button>submit</button>
+  </form>
+</body>
+
+<script>
+  const formElement = document.getElementById('contact-form');
+  const inputElement = document.querySelector('input');
+  const textAreaElement = document.querySelector('textarea');
+
+  formElement.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const name = inputElement.value;
+    const text = textAreaElement.value;
+    fetch('http://localhost:3000/items', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, text })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+      })
+  })
+</script>
+
+</html>

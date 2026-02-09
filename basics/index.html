@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node+Ex</title>
+</head>
+
+<body>
+  <button>Get message</button>
+  <p></p>
+</body>
+<script>
+  const btnElement = document.querySelector('button');
+  const paraElement = document.querySelector('p');
+
+  btnElement.addEventListener('click', () => {
+    console.log('hey');
+    fetch('http://localhost:3000/message')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}, ${response.statusText}`);
+        }
+        return response.json()
+      }).then((data) => {
+        console.log(data);
+        paraElement.textContent = data.message;
+      }).catch((error) => {
+        console.log(error);
+      })
+  });
+</script>
+
+</html>
