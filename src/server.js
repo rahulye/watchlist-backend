@@ -10,49 +10,59 @@ const PORT = 5001;
 config();
 connectDB();
 
-// MOVIE ROUTES http://localhost:5001/movies
+//by passing middlewares to handle post jsons
+app.use(express.json()); 
+app.use(express.urlencoded({extended:true}));
+
+//routes
 import movieRoutes from "./routes/movieRoutes.js"; // we importing a file not a pacakge so .js
+import authRoutes from "./routes/authRoutes.js";
+// MOVIE ROUTES http://localhost:5001/movies
 app.use("/movies", movieRoutes); // whnever the call have movies path use this route "movieRoutes" --> Middleware = function that runs before route handler
+
+// AUTHENTICATION http://localhost:5001/auth
+app.use("/auth", authRoutes);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // for http://localhost:5001/hello
 app.get("/hello", (req, res) => {
 	res.json({ message: `hello from ${PORT}` });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
