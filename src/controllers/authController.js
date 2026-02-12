@@ -2,7 +2,9 @@
 
 import { prisma } from "../config/db.js";
 import bcrypt from "bcryptjs";
+import { generateTokens } from "../utils/generateTokens.js";
 
+// REGISTER
 const register = async (req, res) => {
 	const { name, email, password } = req.body;
 
@@ -21,7 +23,8 @@ const register = async (req, res) => {
 	const hashPassword = await bcrypt.hash(password, salt);
 
 	//create user
-	const user = await prisma.user.create({  //when prisma creates a user, the data returns to the const variable
+	const user = await prisma.user.create({
+		//when prisma creates a user, the data returns to the const variable
 		data: {
 			name,
 			email,
@@ -29,20 +32,69 @@ const register = async (req, res) => {
 		},
 	});
 
-  res.status(201).json({
-    status: "successful",
-    data: {
-      user: {
-        id:user.id,
-        name:user.name,
-        email:user.email,
-        password:user.password,
-      }
-    }
-  })
+	//JWT tokens
+	const token = generateTokens(user.id, res);
 
-  //JWT authentication
-  
+	res.status(201).json({
+		status: "successful",
+		data: {
+			user: {
+				id: user.id,
+				name: user.name,
+				email: user.email,
+				password: user.password,
+			},
+			token,
+		},
+	});
 };
 
-export { register };
+// LOGIN
+const login = async (req, res) => {
+	const { email, password } = req.body;
+
+	//check the user exist
+	const user = await prisma.user.findUnique({
+		where: {
+			email: email,
+		},
+	});
+	if (!user) {
+		res.status(401).json({ error: "Invalid email or password" });
+	}
+
+	//verify password
+	const isValidPassword = bcrypt.compare(password, user.password);
+	if (!isValidPassword) {
+		res.status(401).json({ error: "Invalid password or email" });
+	}
+
+	//JWT tokens
+	const token = generateTokens(user.id, res);
+
+	//response
+	res.status(201).json({
+		status: "successful",
+		data: {
+			user: {
+				id: user.id,
+				email: user.email,
+			},
+			token,
+		},
+	});
+};
+
+// LOGOUT
+
+const logout = async (req,res) => {
+	res.cookie("jwt","", {
+		httpOnly:true,
+		expiresIn:new Date(0),
+	})
+	res.status(201).json({
+		status:"successful",
+		messgae:"Logged out successfully",
+	});
+}
+export { register, login , logout};

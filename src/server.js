@@ -59,6 +59,7 @@ app.use("/auth", authRoutes);
 
 
 
+
 // for http://localhost:5001/hello
 app.get("/hello", (req, res) => {
 	res.json({ message: `hello from ${PORT}` });
