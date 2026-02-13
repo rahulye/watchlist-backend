@@ -42,7 +42,6 @@ const register = async (req, res) => {
 				id: user.id,
 				name: user.name,
 				email: user.email,
-				password: user.password,
 			},
 			token,
 		},
