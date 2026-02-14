@@ -1,7 +1,8 @@
 /** @format */
 
 // const express = require("express");              // load the express library from nodu modules
-import express from "express";                       
+import express from "express";  
+import cookieParser from "cookie-parser";           // Express does NOT parse cookies by default.       
 import { config } from "dotenv";                     //dotenv is a Node.js module that loads environment variables from a .env file into process.env.
 import { connectDB, disconnectDB, prisma } from "./config/db.js";
 const app = express(); // app constains the express methods() like .post() , .get() , .listen()
@@ -13,6 +14,9 @@ connectDB();
 //by passing middlewares to handle post jsons
 app.use(express.json()); 
 app.use(express.urlencoded({extended:true}));
+
+//for cookies to parse
+app.use(cookieParser());
 
 //routes
 import movieRoutes from "./routes/movieRoutes.js"; // we importing a file not a pacakge so .js
