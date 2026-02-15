@@ -7,18 +7,19 @@ import jwt from "jsonwebtoken";
 const authMiddleware = async (req, res, next) => {
 	let token;
 
+
 	//check token exist in header
 	if (
-		req.headers.authentication &&
-		req.headers.authentication.startsWith("Bearer")
+		req.headers.authorization &&
+		req.headers.authorization.startsWith("Bearer")
 	) {
-		token = req.headers.authentication.split(" ")[1]; // [ "Bearer" , "asdas24bjnn5i6nj6u4i4.."]
+		token = req.headers.authorization.split(" ")[1]; // [ "Bearer" , "asdas24bjnn5i6nj6u4i4.."]
 	} else if (req.cookies?.jwt) {
 		token = req.cookies.jwt;
 	}
 
 	if (!token) {
-		res.status(401).json({ error: "Invalid or expired token" });
+		return res.status(401).json({ error: "Invalid or expired token" });
 	}
 
 	//verify and extract userId
@@ -31,13 +32,14 @@ const authMiddleware = async (req, res, next) => {
 		});
 
 		if (!user) {
-			res.status(401).json({ error: "User not found. Authentication failed." });
+			return res.status(401).json({ error: "User not found. authorization failed." });
 		}
     req.user = user;
+		
 		next();
 
 	} catch (err) {
-		res.status(401).json({ error: "Invalid or expired token" });
+		return res.status(401).json({ error: "Invalid or expired token" });
 	}
 };
 

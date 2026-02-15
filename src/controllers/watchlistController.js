@@ -2,6 +2,7 @@
 
 import { prisma } from "../config/db.js";
 
+// ADD MOVIE
 const addToWatchlist = async (req, res) => {
 	const { movieId, status, rating, notes } = req.body;
 
@@ -46,4 +47,34 @@ const addToWatchlist = async (req, res) => {
 	});
 };
 
-export { addToWatchlist };
+// DELETE MOVIE
+const deleteWatchlist = async (req, res) => {
+	//check movie exist in watchlist id=?id
+	const movieItem = await prisma.watchListItem.findUnique({
+		where: {
+			id: req.params.id,
+		},
+	});
+	if (!movieItem) {
+		return res.status(404).json({ error: "Movie not found" });
+	}
+
+	//ensure only owner can delete 
+	if (req.user.id !== movieItem.userId) {
+		return res.status(403).json({ error: "Not right user to modify the watchlist" });
+	}
+
+	//delete it
+	await prisma.watchListItem.delete({
+		where: {
+			id: movieItem.id,
+		},
+	});
+	return res.status(200).json({
+		status:"Success",
+		message: "Movie removed from watchlist",
+	});
+};
+
+
+export { addToWatchlist , deleteWatchlist };
