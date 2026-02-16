@@ -39,7 +39,6 @@ model WatchListItem {
   rating    Int?
   notes     String?
   createdAt DateTime        @default(now())
-  createdBy DateTime        @default(now())
   movie     Movie           @relation(fields: [movieId], references: [id], onDelete: Cascade)
   user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@unique([userId,movieId])
