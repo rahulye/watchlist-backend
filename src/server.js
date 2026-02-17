@@ -1,19 +1,18 @@
 /** @format */
 
 // const express = require("express");              // load the express library from nodu modules
-import express from "express";  
-import cookieParser from "cookie-parser";           // Express does NOT parse cookies by default.       
-import { config } from "dotenv";                     //dotenv is a Node.js module that loads environment variables from a .env file into process.env.
-import { connectDB, disconnectDB, prisma } from "./config/db.js";
+import express from "express";
+import cookieParser from "cookie-parser"; // Express does NOT parse cookies by default.
+import { config } from "dotenv"; //dotenv is a Node.js module that loads environment variables from a .env file into process.env.
+import { connectDB, disconnectDB } from "./config/db.js";
 const app = express(); // app constains the express methods() like .post() , .get() , .listen()
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 
 config();
-connectDB();
 
 //by passing middlewares to handle post jsons
-app.use(express.json()); 
-app.use(express.urlencoded({extended:true}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //for cookies to parse
 app.use(cookieParser());
@@ -30,53 +29,12 @@ app.use("/movies", movieRoutes); // whnever the call have movies path use this r
 app.use("/auth", authRoutes);
 
 // WATCHLIST http://localhost:5001/watchlist
-app.use("/watchlist",watchlistRoutes);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+app.use("/watchlist", watchlistRoutes);
 
 // for http://localhost:5001/hello
 app.get("/hello", (req, res) => {
 	res.json({ message: `hello from ${PORT}` });
 });
-
-
-
 
 //HANDLE ERROS so we disconnect from DB
 // process is an NodeJS global object, It represents the current running Node.js program and .on() means “listen for an event” process.on(eventName, callback)
@@ -108,6 +66,7 @@ process.on("SIGTERM", async () => {
 
 //START SERVER
 //app.listen() takes a port number and a callback function that runs once when the server successfully starts.
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
 	console.log(`Server running in the ${PORT}, rahul`);
+	await connectDB();
 });
