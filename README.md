@@ -9,6 +9,6 @@
 - Database integration (Prisma)
 - frontend for API interaction
 - AWS deployment concepts (learning)
-- Node.js & Express.js
+- TypeScript, Node.js, Express.js
 
 
